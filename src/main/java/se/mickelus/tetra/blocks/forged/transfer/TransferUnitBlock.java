@@ -1,6 +1,7 @@
 package se.mickelus.tetra.blocks.forged.transfer;
 
 import net.minecraft.block.*;
+import net.minecraft.block.pattern.BlockStateMatcher;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -54,6 +55,19 @@ public class TransferUnitBlock extends TetraWaterloggedBlock implements IBlockCa
             new BlockInteraction(Capability.hammer, 1, Direction.SOUTH, 4, 10, 5, 9,
                     new PropertyMatcher().where(plateProp, equalTo(false)),
                     TransferUnitBlock::reconfigure),
+            // TODO: BlockInteraction should allow rotation based positions
+            new BlockInteraction((Capability) null, 0, Direction.UP, 4, 10, 2, 8,
+                    new PropertyMatcher().where(facingProp, equalTo(Direction.NORTH)),
+                    TransferUnitBlock::interactCell),
+            new BlockInteraction((Capability) null, 0, Direction.UP, 4, 10, 5, 11,
+                    new PropertyMatcher().where(facingProp, equalTo(Direction.SOUTH)),
+                    TransferUnitBlock::interactCell),
+            new BlockInteraction((Capability) null, 0, Direction.UP, 2, 8, 4, 10,
+                    new PropertyMatcher().where(facingProp, equalTo(Direction.WEST)),
+                    TransferUnitBlock::interactCell),
+            new BlockInteraction((Capability) null, 0, Direction.UP, 5, 11, 4, 10,
+                    new PropertyMatcher().where(facingProp, equalTo(Direction.EAST)),
+                    TransferUnitBlock::interactCell),
     };
 
     private static final VoxelShape eastShape =  makeCuboidShape(16, 0, 1,  3, 12, 15);
@@ -186,37 +200,7 @@ public class TransferUnitBlock extends TetraWaterloggedBlock implements IBlockCa
             return false;
         }
 
-        if (hit.getFace().equals(Direction.UP)) {
-            if (tile.hasCell()) { // remove cell
-                ItemStack cell = tile.removeCell();
-                if (player.inventory.addItemStackToInventory(cell)) {
-                    player.playSound(SoundEvents.ENTITY_ITEM_PICKUP, 1, 1);
-                } else {
-                    spawnAsEntity(world, pos.up(), cell);
-                }
-
-                world.playSound(player, pos, SoundEvents.BLOCK_IRON_TRAPDOOR_CLOSE, SoundCategory.PLAYERS, 0.5f, 0.6f);
-
-                world.notifyBlockUpdate(pos, state, state, 3);
-
-                if (!player.world.isRemote) {
-                    BlockUseCriterion.trigger((ServerPlayerEntity) player, state, ItemStack.EMPTY);
-                }
-
-                return true;
-            } else if (heldStack.getItem() instanceof ItemCellMagmatic) { // put cell
-                tile.putCell(heldStack);
-                player.setHeldItem(hand, ItemStack.EMPTY);
-                world.playSound(player, pos, SoundEvents.BLOCK_IRON_TRAPDOOR_CLOSE, SoundCategory.PLAYERS, 0.5f, 0.5f);
-                world.notifyBlockUpdate(pos, state, state, 3);
-
-                if (!player.world.isRemote) {
-                    BlockUseCriterion.trigger((ServerPlayerEntity) player, state, ItemStack.EMPTY);
-                }
-
-                return true;
-            }
-        } else if (blockFacing.equals(hit.getFace().getOpposite()) // attach plate
+        if (blockFacing.equals(hit.getFace().getOpposite()) // attach plate
                 && heldStack.getItem() instanceof ItemVentPlate
                 && !state.get(plateProp)) {
 
@@ -233,6 +217,40 @@ public class TransferUnitBlock extends TetraWaterloggedBlock implements IBlockCa
         return BlockInteraction.attemptInteraction(world, state, pos, player, hand, hit);
     }
 
+    public static boolean interactCell(World world, BlockPos pos, BlockState state, PlayerEntity player, Hand hand, Direction hitFace) {
+        ItemStack heldStack = player.getHeldItem(hand);
+        TransferUnitTile tile = TileEntityOptional.from(world, pos, TransferUnitTile.class).orElse(null);
+        if (tile.hasCell()) {ItemStack cell = tile.removeCell();
+            if (player.inventory.addItemStackToInventory(cell)) {
+                player.playSound(SoundEvents.ENTITY_ITEM_PICKUP, 1, 1);
+            } else {
+                spawnAsEntity(world, pos.up(), cell);
+            }
+    
+            world.playSound(player, pos, SoundEvents.BLOCK_IRON_TRAPDOOR_CLOSE, SoundCategory.PLAYERS, 0.5f, 0.6f);
+    
+            world.notifyBlockUpdate(pos, state, state, 3);
+    
+            if (!player.world.isRemote) {
+                BlockUseCriterion.trigger((ServerPlayerEntity) player, state, ItemStack.EMPTY);
+            }
+    
+            return true;
+        } else if (heldStack.getItem() instanceof ItemCellMagmatic) {
+            tile.putCell(heldStack);
+            player.setHeldItem(hand, ItemStack.EMPTY);
+            world.playSound(player, pos, SoundEvents.BLOCK_IRON_TRAPDOOR_CLOSE, SoundCategory.PLAYERS, 0.5f, 0.5f);
+            world.notifyBlockUpdate(pos, state, state, 3);
+
+            if (!player.world.isRemote) {
+                BlockUseCriterion.trigger((ServerPlayerEntity) player, state, ItemStack.EMPTY);
+            }
+
+            return true;
+        }
+        return false;
+    }
+    
     @Override
     public void onReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving) {
         if (!equals(newState.getBlock())) {

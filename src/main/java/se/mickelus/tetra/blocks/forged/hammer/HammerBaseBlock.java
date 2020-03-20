@@ -4,6 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.HorizontalBlock;
+import net.minecraft.block.pattern.BlockStateMatcher;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -26,8 +27,10 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.registries.ObjectHolder;
 import se.mickelus.tetra.TetraMod;
 import se.mickelus.tetra.advancements.BlockUseCriterion;
+import se.mickelus.tetra.blocks.PropertyMatcher;
 import se.mickelus.tetra.blocks.TetraBlock;
 import se.mickelus.tetra.blocks.forged.ForgedBlockCommon;
+import se.mickelus.tetra.blocks.forged.transfer.TransferUnitBlock;
 import se.mickelus.tetra.blocks.salvage.BlockInteraction;
 import se.mickelus.tetra.blocks.salvage.IBlockCapabilityInteractive;
 import se.mickelus.tetra.capabilities.Capability;
@@ -41,6 +44,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import static com.google.common.base.Predicates.equalTo;
 import static net.minecraft.fluid.Fluids.WATER;
 import static net.minecraft.state.properties.BlockStateProperties.WATERLOGGED;
 import static se.mickelus.tetra.blocks.forged.ForgedBlockCommon.locationTooltip;
@@ -71,7 +75,14 @@ public class HammerBaseBlock extends TetraBlock implements IBlockCapabilityInter
                     reconfigure(world, pos, blockState, player, Direction.EAST)),
             new BlockInteraction(Capability.hammer, 1, Direction.WEST, 6, 10, 2, 9,
                     EnumHammerPlate.west.prop, false, (world, pos, blockState, player, hand, hitFace) ->
-                    reconfigure(world, pos, blockState, player, Direction.WEST))
+                    reconfigure(world, pos, blockState, player, Direction.WEST)),
+            
+            new BlockInteraction((Capability) null, 0, Direction.NORTH, 5, 11, 5, 11,
+                    BlockStateMatcher.ANY, (world, pos, blockState, player, hand, hitFace) ->
+                    interactCell(world, pos, blockState, player, hand, 0)),
+            new BlockInteraction((Capability) null, 0, Direction.SOUTH, 5, 11, 5, 11,
+                    BlockStateMatcher.ANY, (world, pos, blockState, player, hand, hitFace) ->
+                    interactCell(world, pos, blockState, player, hand, 1))
     };
 
     public HammerBaseBlock() {
@@ -177,35 +188,7 @@ public class HammerBaseBlock extends TetraBlock implements IBlockCapabilityInter
             return false;
         }
 
-        if (blockFacing.getAxis().equals(facing.getAxis())) {
-            int slotIndex = blockFacing.equals(facing)? 0 : 1;
-            if (te.hasCellInSlot(slotIndex)) {
-                ItemStack cell = te.removeCellFromSlot(slotIndex);
-                if (player.inventory.addItemStackToInventory(cell)) {
-                    player.playSound(SoundEvents.ENTITY_ITEM_PICKUP, 1, 1);
-                } else {
-                    spawnAsEntity(world, pos.up(), cell);
-                }
-
-                world.playSound(player, pos, SoundEvents.BLOCK_IRON_TRAPDOOR_CLOSE, SoundCategory.PLAYERS, 0.5f, 0.6f);
-
-                if (!player.world.isRemote) {
-                    BlockUseCriterion.trigger((ServerPlayerEntity) player, world.getBlockState(pos), ItemStack.EMPTY);
-                }
-
-                return true;
-            } else if (heldStack.getItem() instanceof ItemCellMagmatic) {
-                te.putCellInSlot(heldStack, slotIndex);
-                player.setHeldItem(hand, ItemStack.EMPTY);
-                world.playSound(player, pos, SoundEvents.BLOCK_IRON_TRAPDOOR_CLOSE, SoundCategory.PLAYERS, 0.5f, 0.5f);
-
-                if (!player.world.isRemote) {
-                    BlockUseCriterion.trigger((ServerPlayerEntity) player, world.getBlockState(pos), heldStack);
-                }
-
-                return true;
-            }
-        } else if (heldStack.getItem() instanceof ItemVentPlate) {
+        if (heldStack.getItem() instanceof ItemVentPlate) {
             if (Rotation.CLOCKWISE_90.rotate(blockFacing).equals(facing) && !blockState.get(EnumHammerPlate.east.prop)) {
                 world.setBlockState(pos, blockState.with(EnumHammerPlate.east.prop, true), 3);
 
@@ -230,6 +213,43 @@ public class HammerBaseBlock extends TetraBlock implements IBlockCapabilityInter
         }
 
         return BlockInteraction.attemptInteraction(world, world.getBlockState(pos), pos, player, hand, rayTraceResult);
+    }
+
+    public static boolean interactCell(World world, BlockPos pos, BlockState blockState, PlayerEntity player, Hand hand, int slotIndex) {
+        HammerBaseTile te = TileEntityOptional.from(world, pos, HammerBaseTile.class).orElse(null);
+        ItemStack heldStack = player.getHeldItem(hand);
+
+        if (te == null) {
+            return false;
+        }
+        
+        if (te.hasCellInSlot(slotIndex)) {
+            ItemStack cell = te.removeCellFromSlot(slotIndex);
+            if (player.inventory.addItemStackToInventory(cell)) {
+                player.playSound(SoundEvents.ENTITY_ITEM_PICKUP, 1, 1);
+            } else {
+                spawnAsEntity(world, pos.up(), cell);
+            }
+
+            world.playSound(player, pos, SoundEvents.BLOCK_IRON_TRAPDOOR_CLOSE, SoundCategory.PLAYERS, 0.5f, 0.6f);
+
+            if (!player.world.isRemote) {
+                BlockUseCriterion.trigger((ServerPlayerEntity) player, world.getBlockState(pos), ItemStack.EMPTY);
+            }
+
+            return true;
+        } else if (heldStack.getItem() instanceof ItemCellMagmatic) {
+            te.putCellInSlot(heldStack, slotIndex);
+            player.setHeldItem(hand, ItemStack.EMPTY);
+            world.playSound(player, pos, SoundEvents.BLOCK_IRON_TRAPDOOR_CLOSE, SoundCategory.PLAYERS, 0.5f, 0.5f);
+
+            if (!player.world.isRemote) {
+                BlockUseCriterion.trigger((ServerPlayerEntity) player, world.getBlockState(pos), heldStack);
+            }
+
+            return true;
+        }
+        return false;
     }
 
     @Override
