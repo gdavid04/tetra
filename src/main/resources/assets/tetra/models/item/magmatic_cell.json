@@ -6,6 +6,18 @@
   "overrides": [
     {
       "predicate": {
+        "tetra:charged": 0.0078125
+      },
+      "model": "tetra:item/magmatic_cell_low"
+    },
+    {
+      "predicate": {
+        "tetra:charged": 0.4
+      },
+      "model": "tetra:item/magmatic_cell_good"
+    },
+    {
+      "predicate": {
         "tetra:charged": 1
       },
       "model": "tetra:item/magmatic_cell_charged"

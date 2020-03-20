@@ -37,7 +37,7 @@ public class ItemCellMagmatic extends TetraItem {
 
         setRegistryName(unlocalizedName);
 
-        this.addPropertyOverride(new ResourceLocation(chargedPropKey), (itemStack, world, livingEntity) -> getCharge(itemStack) > 0 ? 1 : 0);
+        this.addPropertyOverride(new ResourceLocation(chargedPropKey), (itemStack, world, livingEntity) -> getCharge(itemStack) / (float) maxCharge);
     }
 
     @Override
