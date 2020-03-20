@@ -7,12 +7,14 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.registries.ObjectHolder;
+import se.mickelus.tetra.NBTHelper;
 import se.mickelus.tetra.TetraMod;
 import se.mickelus.tetra.items.TetraItem;
 import se.mickelus.tetra.items.TetraItemGroup;
@@ -20,12 +22,17 @@ import se.mickelus.tetra.items.TetraItemGroup;
 import static se.mickelus.tetra.blocks.forged.ForgedBlockCommon.locationTooltip;
 
 public class ItemCellMagmatic extends TetraItem {
+
+    public final static String meterKey = "meter";
+
     private static final String unlocalizedName = "magmatic_cell";
 
     @ObjectHolder(TetraMod.MOD_ID + ":" + unlocalizedName)
     public static ItemCellMagmatic instance;
 
     private final String chargedPropKey = "tetra:charged";
+    private final String chargePropKey = "tetra:charge";
+    private final String meteredPropKey = "tetra:metered";
 
     public static final int maxCharge = 128;
 
@@ -37,7 +44,13 @@ public class ItemCellMagmatic extends TetraItem {
 
         setRegistryName(unlocalizedName);
 
-        this.addPropertyOverride(new ResourceLocation(chargedPropKey), (itemStack, world, livingEntity) -> getCharge(itemStack) / (float) maxCharge);
+        // is charged
+        addPropertyOverride(new ResourceLocation(chargedPropKey), (itemStack, world, livingEntity) -> getCharge(itemStack) == 0 ? 0 : 1);
+        // charge percentage
+        addPropertyOverride(new ResourceLocation(chargePropKey), (itemStack, world, livingEntity) -> getCharge(itemStack) / (float) maxCharge);
+        // is metered
+        // TODO: visual indicator of thermal gauge attachment
+        addPropertyOverride(new ResourceLocation(meteredPropKey), (itemStack, world, livingEntity) -> isMetered(itemStack) ? 1 : 0);
     }
 
     @Override
@@ -55,8 +68,18 @@ public class ItemCellMagmatic extends TetraItem {
         } else {
             chargeLine.appendSibling(new TranslationTextComponent("item.tetra.magmatic_cell.charge_empty"));
         }
+        
+        if (isMetered(stack) && charge != 0 && charge != maxCharge) {
+            chargeLine.appendSibling(new StringTextComponent(String.format(" §8(§7%.0f%%§8)", charge * 100f / maxCharge)));
+        }
 
         tooltip.add(chargeLine);
+        if (isMetered(stack)) {
+            tooltip.add(new StringTextComponent(""));
+            tooltip.add(new TranslationTextComponent("attachments"));
+            tooltip.add(new StringTextComponent("§8- ")
+                    .appendSibling(new TranslationTextComponent("item.tetra.thermal_gauge")));
+        }
         tooltip.add(new StringTextComponent(""));
         tooltip.add(locationTooltip);
     }
@@ -69,6 +92,10 @@ public class ItemCellMagmatic extends TetraItem {
             ItemStack emptyStack = new ItemStack(this);
             emptyStack.setDamage(maxCharge);
             itemList.add(emptyStack);
+            
+            ItemStack metered = new ItemStack(this);
+            attachMeter(metered);
+            itemList.add(metered);
         }
     }
 
@@ -98,17 +125,25 @@ public class ItemCellMagmatic extends TetraItem {
         return overfill;
     }
 
-    // todo: change these for metered upgrade
+    public boolean isMetered(ItemStack stack) {
+        return NBTHelper.getTag(stack)
+                .getBoolean(meterKey);
+    }
+
+    public void attachMeter(ItemStack stack) {
+        NBTHelper.getTag(stack)
+         .putBoolean(meterKey, true);
+    }
+
     public boolean showDurabilityBar(ItemStack stack) {
-        return false;
+        return isMetered(stack);
     }
 
     public double getDurabilityForDisplay(ItemStack itemStack) {
         return super.getDurabilityForDisplay(itemStack);
     }
 
-
     public int getRGBDurabilityForDisplay(ItemStack itemStack) {
-        return super.getRGBDurabilityForDisplay(itemStack);
+        return MathHelper.rgb(1, (1 - (float) getDurabilityForDisplay(itemStack)) / 2, 0);
     }
 }

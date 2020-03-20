@@ -168,7 +168,8 @@ public class TetraMod {
                 new ItemMetalScrap(),
                 new ItemVentPlate(),
                 new ItemJournal(),
-                new EarthpiercerItem()
+                new EarthpiercerItem(),
+                new ThermalGaugeItem()
         };
 
         if (ConfigHandler.enableBow.get()) {

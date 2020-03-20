@@ -222,6 +222,11 @@
   "item.tetra.magmatic_cell.charge_low": "§eLow",
   "item.tetra.magmatic_cell.charge_empty": "§cEmpty",
 
+  "attachments": "§7Attachments:",
+  
+  "item.tetra.thermal_gauge": "Thermal gauge",
+  "attach_meter_action.label": "Attach gauge",
+
   "block.tetra.forged_pillar": "Forged pillar",
   "block.tetra.forged_platform": "Forged platform",
   "block.tetra.forged_platform_slab": "Forged platform",
