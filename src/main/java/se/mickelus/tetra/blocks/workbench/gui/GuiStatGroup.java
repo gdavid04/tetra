@@ -69,6 +69,7 @@ public class GuiStatGroup extends GuiElement {
         bars.add(GuiStats.releaseLatch);
         bars.add(GuiStats.overbowed);
         bars.add(GuiStats.intuit);
+        bars.add(GuiStats.magmaCapacity);
 
         Arrays.stream(Capability.values())
                 .map(capability -> new GuiStatBarCapability(0, 0, GuiStats.barLength, capability))

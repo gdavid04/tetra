@@ -16,7 +16,7 @@ import se.mickelus.tetra.blocks.forged.container.ForgedContainerTile;
 import se.mickelus.tetra.blocks.forged.transfer.EnumTransferConfig;
 import se.mickelus.tetra.blocks.forged.transfer.TransferUnitBlock;
 import se.mickelus.tetra.blocks.forged.transfer.TransferUnitTile;
-import se.mickelus.tetra.items.cell.ItemCellMagmatic;
+import se.mickelus.tetra.items.modular.impl.cell.ItemCellMagmatic;
 
 import javax.annotation.Nullable;
 import java.util.Random;

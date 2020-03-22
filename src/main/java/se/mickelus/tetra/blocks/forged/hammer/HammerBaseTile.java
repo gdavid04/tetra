@@ -21,7 +21,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.registries.ObjectHolder;
 import se.mickelus.tetra.TetraMod;
-import se.mickelus.tetra.items.cell.ItemCellMagmatic;
+import se.mickelus.tetra.items.modular.impl.cell.ItemCellMagmatic;
 
 public class HammerBaseTile extends TileEntity {
 

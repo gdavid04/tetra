@@ -188,6 +188,9 @@
   "stats.integrity_usage": "Integrity usage: %s/%s",
   "stats.integrity_usage.tooltip": "Integrity is provided by some modules (often in a specific slot), while it is required by other modules and most improvements.",
 
+  "stats.magma_capacity": "Energy capacity",
+  "stats.magma_capacity.tooltip": "The amount of thermal energy this cell can hold, compared to a regular thermal cell",
+
 
   "item.tetra.modular.broken": "Broken",
   "item.tetra.modular.empty_slot": "Empty",
@@ -221,11 +224,34 @@
   "item.tetra.magmatic_cell.charge_good": "§aGood",
   "item.tetra.magmatic_cell.charge_low": "§eLow",
   "item.tetra.magmatic_cell.charge_empty": "§cEmpty",
-
-  "attachments": "§7Attachments:",
+  
+  "cell/casing": "Cell casing",
+  "cell/canister": "Canister",
+  "cell/gadget": "Gadget",
+  
+  "casing/basic": "Basic forged casing",
+  "canister/small": "Small canister",
+  "canister/regular": "Regular canister",
+  "canister/large": "Large canister",
+  "gadget/gauge": "Thermal gauge",
+  
+  "tetra/schema/cell/casing.name": "Cell casing",
+  "tetra/schema/cell/casing.description": "Replace the casing of the cell",
+  "tetra/schema/cell/casing.slot1": "Material",
+  "tetra/schema/cell/canister/small.name": "Small canister",
+  "tetra/schema/cell/canister/small.description": "A lightweight canister with smaller capacity, but less integrity cost",
+  "tetra/schema/cell/canister/small.slot1": "Material",
+  "tetra/schema/cell/canister/regular.name": "Regular canister",
+  "tetra/schema/cell/canister/regular.description": "A canister with normal capacity",
+  "tetra/schema/cell/canister/regular.slot1": "Material",
+  "tetra/schema/cell/canister/large.name": "Large canister",
+  "tetra/schema/cell/canister/large.description": "A heavy canister with increased capacity, but bigger integrity cost",
+  "tetra/schema/cell/canister/large.slot1": "Material",
+  "tetra/schema/cell/gadget.name": "Gadget",
+  "tetra/schema/cell/gadget.description": "Attach a gadget to the cell, giving it extra functionality",
+  "tetra/schema/cell/gadget.slot1": "Gadget",
   
   "item.tetra.thermal_gauge": "Thermal gauge",
-  "attach_meter_action.label": "Attach gauge",
 
   "block.tetra.forged_pillar": "Forged pillar",
   "block.tetra.forged_platform": "Forged platform",

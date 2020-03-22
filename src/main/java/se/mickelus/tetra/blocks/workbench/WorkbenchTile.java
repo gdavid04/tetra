@@ -22,7 +22,6 @@ import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.registries.ObjectHolder;
 import org.apache.commons.lang3.ArrayUtils;
 import se.mickelus.tetra.TetraMod;
-import se.mickelus.tetra.blocks.workbench.action.AttachMeterAction;
 import se.mickelus.tetra.blocks.workbench.action.ConfigAction;
 import se.mickelus.tetra.blocks.workbench.action.RepairAction;
 import se.mickelus.tetra.blocks.workbench.action.WorkbenchAction;
@@ -66,8 +65,7 @@ public class WorkbenchTile extends TileEntity implements INamedContainerProvider
     private LazyOptional<ItemStackHandler> handler = LazyOptional.of(this::createHandler);
 
     private static WorkbenchAction[] defaultActions = new WorkbenchAction[] {
-        new RepairAction(),
-        new AttachMeterAction()
+        new RepairAction()
     };
 
     private static WorkbenchAction[] actions = new WorkbenchAction[0];

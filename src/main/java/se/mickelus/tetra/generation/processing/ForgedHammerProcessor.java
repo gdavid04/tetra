@@ -15,7 +15,7 @@ import se.mickelus.tetra.blocks.forged.hammer.EnumHammerConfig;
 import se.mickelus.tetra.blocks.forged.hammer.EnumHammerPlate;
 import se.mickelus.tetra.blocks.forged.hammer.HammerBaseBlock;
 import se.mickelus.tetra.blocks.forged.hammer.HammerBaseTile;
-import se.mickelus.tetra.items.cell.ItemCellMagmatic;
+import se.mickelus.tetra.items.modular.impl.cell.ItemCellMagmatic;
 
 import javax.annotation.Nullable;
 import java.util.Random;
@@ -33,17 +33,21 @@ public class ForgedHammerProcessor extends StructureProcessor {
             CompoundNBT newCompound = blockInfo.nbt.copy();
 
             // randomize cells
-            ItemStack cell1 = random.nextBoolean() ? new ItemStack(ItemCellMagmatic.instance) : null;
-            ItemStack cell2 = random.nextBoolean() ? new ItemStack(ItemCellMagmatic.instance) : null;
+            ItemStack cell1 = null;
+            ItemStack cell2 = null;
 
-            int charge1 = random.nextInt(ItemCellMagmatic.maxCharge);
-            if (cell1 != null) {
-                ItemCellMagmatic.instance.recharge(cell1, charge1);
+            float charge1 = random.nextFloat();
+            if (random.nextBoolean()) {
+                cell1 = ItemCellMagmatic.instance.make(charge1);
+            } else if (random.nextBoolean()) {
+                cell1 = ItemCellMagmatic.instance.make(0);
             }
 
-            int charge2 = ItemCellMagmatic.maxCharge - random.nextInt(Math.max(charge1, 1));
-            if (cell2 != null) {
-                ItemCellMagmatic.instance.recharge(cell2, charge2);
+            float charge2 = random.nextFloat();
+            if (random.nextBoolean()) {
+                cell2 = ItemCellMagmatic.instance.make(charge2);
+            } else if (random.nextBoolean()) {
+                cell2 = ItemCellMagmatic.instance.make(0);
             }
 
             HammerBaseTile.writeCells(newCompound, cell1, cell2);

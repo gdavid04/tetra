@@ -28,8 +28,8 @@ import se.mickelus.tetra.blocks.forged.ForgedBlockCommon;
 import se.mickelus.tetra.blocks.salvage.BlockInteraction;
 import se.mickelus.tetra.blocks.salvage.IBlockCapabilityInteractive;
 import se.mickelus.tetra.capabilities.Capability;
-import se.mickelus.tetra.items.cell.ItemCellMagmatic;
 import se.mickelus.tetra.items.forged.ItemVentPlate;
+import se.mickelus.tetra.items.modular.impl.cell.ItemCellMagmatic;
 import se.mickelus.tetra.util.TileEntityOptional;
 
 import javax.annotation.Nullable;

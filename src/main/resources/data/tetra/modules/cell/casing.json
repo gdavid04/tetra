@@ -1,0 +1,16 @@
+{
+	"replace": true,
+    "type": "tetra:basic_major_module",
+    "slots": ["cell/casing"],
+    "variants": [
+        {
+            "key": "casing/basic",
+            "integrity": 2,
+            "glyph": {
+                "tint": "ffffff",
+                "textureX": 0,
+                "textureY": 48
+            }
+        }
+    ]
+}

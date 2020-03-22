@@ -1,0 +1,24 @@
+{
+    "replace": true,
+    "slots": [
+        "cell/gadget"
+    ],
+    "materialSlotCount": 1,
+    "displayType": "minor",
+    "glyph": {
+        "textureX": 7,
+        "textureY": 64
+    },
+    "outcomes": [
+        {
+            "material": {
+                "item": "tetra:thermal_gauge"
+            },
+            "requiredCapabilities": {
+                "hammer": 5
+            },
+            "moduleKey": "cell/gadget",
+            "moduleVariant": "gadget/gauge"
+        }
+    ]
+}

@@ -221,6 +221,11 @@ public class GuiStats {
 
     public static final GuiStatBarIntegrity integrity = new GuiStatBarIntegrity(0, 0);
 
+    public static final IStatGetter magmaCapacityGetter = new StatGetterEffectLevel(ItemEffect.magmaCapacity, 1 / 128f);
+    public static final GuiStatBar magmaCapacity = new GuiStatBar(0, 0, barLength, I18n.format("stats.magma_capacity"),
+                0, 3, false, magmaCapacityGetter, LabelGetterBasic.multiplierLabel,
+            new TooltipGetterInteger("stats.magma_capacity.tooltip", fortuneGetter));
+
 
 
 // todo: remaining effects

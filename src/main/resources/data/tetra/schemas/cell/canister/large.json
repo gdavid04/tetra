@@ -1,0 +1,25 @@
+{
+    "replace": true,
+    "slots": [
+        "cell/canister"
+    ],
+    "materialSlotCount": 1,
+    "displayType": "major",
+    "glyph": {
+        "textureX": 16,
+        "textureY": 48
+    },
+    "outcomes": [
+        {
+            "material": {
+                "item": "minecraft:iron_ingot",
+                "count": 12
+            },
+            "requiredCapabilities": {
+                "hammer": 5
+            },
+            "moduleKey": "cell/canister",
+            "moduleVariant": "canister/large"
+        }
+    ]
+}

@@ -257,7 +257,17 @@ public enum ItemEffect {
      */
     flow,
 
-    overbowed;
+    overbowed,
+    
+    /**
+     *  Magma capacity: The amount of magmatic charge an item can hold.
+     */
+    magmaCapacity,
+    
+    /**
+     *  Metered: The charge of a cell can be determined with higher precision.
+     */
+    metered;
 
     public static final String hauntedKey = "destabilized/haunted";
 }

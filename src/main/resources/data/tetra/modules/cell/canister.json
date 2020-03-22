@@ -1,0 +1,42 @@
+{
+	"replace": true,
+    "type": "tetra:basic_major_module",
+    "slots": ["cell/canister"],
+    "variants": [
+        {
+            "key": "canister/small",
+            "glyph": {
+                "tint": "ffffff",
+                "textureX": 16,
+                "textureY": 48
+            },
+            "effects": {
+                "magmaCapacity": 64
+            }
+        },
+        {
+            "key": "canister/regular",
+            "integrity": -1,
+            "glyph": {
+                "tint": "ffffff",
+                "textureX": 16,
+                "textureY": 48
+            },
+            "effects": {
+                "magmaCapacity": 128
+            }
+        },
+        {
+            "key": "canister/large",
+            "integrity": -2,
+            "glyph": {
+                "tint": "ffffff",
+                "textureX": 16,
+                "textureY": 48
+            },
+            "effects": {
+                "magmaCapacity": 192
+            }
+        }
+    ]
+}

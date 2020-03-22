@@ -1,0 +1,19 @@
+{
+	"replace": true,
+    "type": "tetra:basic_module",
+    "slots": ["cell/gadget"],
+    "variants": [
+        {
+            "key": "gadget/gauge",
+            "integrity": -1,
+            "glyph": {
+                "tint": "ffffff",
+                "textureX": 0,
+                "textureY": 64
+            },
+            "effects": {
+                "metered": 1
+            }
+        }
+    ]
+}

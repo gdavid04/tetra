@@ -15,7 +15,7 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.registries.ObjectHolder;
 import se.mickelus.tetra.TetraMod;
 import se.mickelus.tetra.blocks.IHeatTransfer;
-import se.mickelus.tetra.items.cell.ItemCellMagmatic;
+import se.mickelus.tetra.items.modular.impl.cell.ItemCellMagmatic;
 import se.mickelus.tetra.util.CastOptional;
 import se.mickelus.tetra.util.TileEntityOptional;
 
@@ -39,7 +39,7 @@ public class TransferUnitTile extends TileEntity implements ITickableTileEntity,
     public boolean canRecieve() {
         return TransferUnitBlock.getEffectPowered(world, pos, getBlockState()).equals(EnumTransferEffect.receive)
                 && hasCell()
-                && getCharge() < ItemCellMagmatic.maxCharge;
+                && getCharge() < getMaxCharge();
     }
 
     public boolean canSend() {
@@ -107,6 +107,12 @@ public class TransferUnitTile extends TileEntity implements ITickableTileEntity,
                 .orElse(0);
     }
 
+    public int getMaxCharge() {
+        return CastOptional.cast(cell.getItem(), ItemCellMagmatic.class)
+                .map(item -> item.getMaxCharge(cell))
+                .orElse(0);
+    }
+
     @Override
     public float getEfficiency() {
         return TransferUnitBlock.hasPlate(getBlockState()) ? 1 : 0.9f;
@@ -146,7 +152,7 @@ public class TransferUnitTile extends TileEntity implements ITickableTileEntity,
 
                     int overfill = item.recharge(cell, amount);
 
-                    if (item.getCharge(cell) == ItemCellMagmatic.maxCharge) {
+                    if (item.getCharge(cell) == item.getMaxCharge(cell)) {
                         runFilledEffects();
                     }
 
