@@ -146,4 +146,22 @@ public class ItemCellMagmatic extends TetraItem {
     public int getRGBDurabilityForDisplay(ItemStack itemStack) {
         return MathHelper.rgb(1, (1 - (float) getDurabilityForDisplay(itemStack)) / 2, 0);
     }
+
+    public int getComparatorValue(ItemStack stack) {
+        int charge = getCharge(stack);
+        if (charge == maxCharge) {
+            return 15;
+        } else if (charge == 0) {
+            return 0;
+        } else if (isMetered(stack)) {
+            // 0              -> 0
+            // 1..maxCharge-1 -> 1..14
+            // maxCharge      -> 15
+            return Math.round((charge - 1) / (maxCharge - 2f) * 14) + 1;
+        } else if (charge > maxCharge * 0.4) {
+            return 10;
+        } else {
+            return 5;
+        }
+    }
 }

@@ -339,4 +339,20 @@ public class TransferUnitBlock extends TetraWaterloggedBlock implements IBlockCa
     public BlockState mirror(BlockState state, Mirror mirror) {
         return state.rotate(mirror.toRotation(state.get(facingProp)));
     }
+    
+    @Override
+    public boolean hasComparatorInputOverride(BlockState state) {
+       return true;
+    }
+
+    @Override
+    public int getComparatorInputOverride(BlockState blockState, World world, BlockPos pos) {
+        TransferUnitTile tile = TileEntityOptional.from(world, pos, TransferUnitTile.class).orElse(null);
+        if (tile.hasCell()) {
+            ItemStack cell = tile.getCell();
+            return ItemCellMagmatic.instance.getComparatorValue(cell);
+        } else {
+            return 0;
+        }
+    }
 }
